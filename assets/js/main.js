@@ -1,763 +1,676 @@
-const API_URL =
-  "https://imperius-api.kursatcoskunerr.workers.dev";
+"use strict";
 
-const SESSION_KEY =
-  "imperius_session";
+/* =========================================================
+   IMPERIUS WEBSITE - MAIN.JS
+   Discord OAuth + Dashboard + UI
+========================================================= */
 
+var API_URL = "https://imperius-api.kursatcoskunerr.workers.dev";
+var SESSION_KEY = "imperius_session";
 
-// ======================================================
-// ELEMENTS
-// ======================================================
-
-const navbar =
-  document.getElementById("navbar");
-
-const mobileMenu =
-  document.getElementById("mobileMenu");
-
-const navMenu =
-  document.getElementById("navMenu");
-
-const search =
-  document.getElementById("commandSearch");
+var currentUser = null;
 
 
-// ======================================================
-// NAVBAR
-// ======================================================
+/* =========================================================
+   HELPERS
+========================================================= */
 
-window.addEventListener(
-  "scroll",
-  () => {
-    navbar?.classList.toggle(
-      "scrolled",
-      window.scrollY > 40
-    );
+function getElement(id) {
+  return document.getElementById(id);
+}
+
+function escapeHTML(value) {
+  var div = document.createElement("div");
+  div.textContent = value == null ? "" : String(value);
+  return div.innerHTML;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+function setupNavbar() {
+  var navbar = getElement("navbar");
+
+  if (!navbar) {
+    return;
   }
-);
 
-
-mobileMenu?.addEventListener(
-  "click",
-  () => {
-    navMenu?.classList.toggle(
-      "open"
-    );
+  function updateNavbar() {
+    if (window.scrollY > 30) {
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
   }
-);
+
+  updateNavbar();
+  window.addEventListener("scroll", updateNavbar);
+}
 
 
-document
-  .querySelectorAll("#navMenu a")
-  .forEach(link => {
+/* =========================================================
+   MOBILE MENU
+========================================================= */
 
-    link.addEventListener(
-      "click",
-      () => {
-        navMenu?.classList.remove(
-          "open"
-        );
-      }
-    );
+function setupMobileMenu() {
+  var mobileMenu = getElement("mobileMenu");
+  var navMenu = getElement("navMenu");
 
+  if (!mobileMenu || !navMenu) {
+    return;
+  }
+
+  mobileMenu.addEventListener("click", function () {
+    navMenu.classList.toggle("active");
   });
 
+  var links = navMenu.getElementsByTagName("a");
 
-// ======================================================
-// ANIMATIONS
-// ======================================================
+  for (var i = 0; i < links.length; i++) {
+    links[i].addEventListener("click", function () {
+      navMenu.classList.remove("active");
+    });
+  }
+}
 
-const observer =
-  new IntersectionObserver(
-    entries => {
 
-      entries.forEach(entry => {
+/* =========================================================
+   REVEAL ANIMATIONS
+========================================================= */
 
-        if (entry.isIntersecting) {
+function setupRevealAnimations() {
+  var elements = document.querySelectorAll(".reveal");
 
-          entry.target.classList.add(
-            "visible"
-          );
+  if (!elements.length) {
+    return;
+  }
 
-          observer.unobserve(
-            entry.target
-          );
+  if (!("IntersectionObserver" in window)) {
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].classList.add("visible");
+    }
+
+    return;
+  }
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          entries[i].target.classList.add("visible");
+          observer.unobserve(entries[i].target);
         }
-
-      });
-
+      }
     },
     {
       threshold: 0.12
     }
   );
 
-
-document
-  .querySelectorAll(".reveal")
-  .forEach(element => {
-
-    observer.observe(
-      element
-    );
-
-  });
-
-
-// ======================================================
-// COMMAND SEARCH
-// ======================================================
-
-search?.addEventListener(
-  "input",
-  event => {
-
-    const value =
-      event.target.value
-        .toLocaleLowerCase("tr-TR")
-        .trim();
-
-
-    document
-      .querySelectorAll(".command-card")
-      .forEach(card => {
-
-        const keywords =
-          (card.dataset.command || "")
-            .toLocaleLowerCase("tr-TR");
-
-        const text =
-          card.innerText
-            .toLocaleLowerCase("tr-TR");
-
-
-        card.style.display =
-          keywords.includes(value) ||
-          text.includes(value)
-            ? ""
-            : "none";
-
-      });
-
-  });
-
-
-// ======================================================
-// LOGIN
-// ======================================================
-
-function loginWithDiscord() {
-
-  window.location.href =
-    `${API_URL}/auth/discord`;
-
-}
-
-
-// ======================================================
-// RECEIVE SESSION FROM OAUTH
-// ======================================================
-
-function receiveOAuthSession() {
-
-  const hash =
-    window.location.hash;
-
-
-  if (
-    !hash.startsWith(
-      "#imperius_session="
-    )
-  ) {
-    return false;
+  for (var j = 0; j < elements.length; j++) {
+    observer.observe(elements[j]);
   }
-
-
-  try {
-
-    const encodedToken =
-      hash.substring(
-        "#imperius_session=".length
-      );
-
-
-    const token =
-      decodeURIComponent(
-        encodedToken
-      );
-
-
-    if (!token) {
-      return false;
-    }
-
-
-    /*
-     * sessionStorage:
-     *
-     * - sekmeye özel
-     * - tarayıcı kapatılınca gider
-     * - localStorage kullanılmıyor
-     */
-
-    sessionStorage.setItem(
-      SESSION_KEY,
-      token
-    );
-
-
-    /*
-     * Tokenı hemen adres çubuğundan
-     * kaldır.
-     */
-
-    history.replaceState(
-      null,
-      document.title,
-      window.location.pathname +
-      window.location.search
-    );
-
-
-    return true;
-
-  } catch (error) {
-
-    console.error(
-      "OAuth session error:",
-      error
-    );
-
-    return false;
-  }
-
 }
 
 
-// ======================================================
-// SESSION
-// ======================================================
+/* =========================================================
+   COMMAND SEARCH
+========================================================= */
 
-function getSessionToken() {
+function setupCommandSearch() {
+  var search = getElement("commandSearch");
 
-  return sessionStorage.getItem(
-    SESSION_KEY
-  );
-
-}
-
-
-// ======================================================
-// CHECK USER
-// ======================================================
-
-async function checkDiscordSession() {
-
-  const token =
-    getSessionToken();
-
-
-  if (!token) {
-
-    setLoggedOutState();
-
+  if (!search) {
     return;
   }
 
+  search.addEventListener("input", function () {
+    var query = search.value.toLowerCase().trim();
+
+    var cards = document.querySelectorAll(".command-card");
+
+    for (var i = 0; i < cards.length; i++) {
+      var searchable =
+        (
+          cards[i].getAttribute("data-command") +
+          " " +
+          cards[i].textContent
+        ).toLowerCase();
+
+      if (searchable.indexOf(query) !== -1) {
+        cards[i].style.display = "";
+      } else {
+        cards[i].style.display = "none";
+      }
+    }
+  });
+}
+
+
+/* =========================================================
+   DISCORD LOGIN
+========================================================= */
+
+function loginWithDiscord() {
+  window.location.href = API_URL + "/auth/discord";
+}
+
+
+/* =========================================================
+   RECEIVE OAUTH SESSION
+========================================================= */
+
+function receiveOAuthSession() {
+  var hash = window.location.hash || "";
+  var prefix = "#imperius_session=";
+
+  if (hash.indexOf(prefix) !== 0) {
+    return null;
+  }
+
+  var token = hash.substring(prefix.length);
 
   try {
+    token = decodeURIComponent(token);
+  } catch (error) {
+    console.log("Session decode error:", error);
+  }
 
-    const response =
-      await fetch(
-        `${API_URL}/api/me`,
-        {
-          method: "GET",
+  /*
+   * URL'deki session bilgisini hemen kaldır.
+   * Böylece adres çubuğunda görünmez.
+   */
+  try {
+    window.history.replaceState(
+      null,
+      document.title,
+      window.location.pathname + window.location.search
+    );
+  } catch (error) {
+    console.log("URL cleanup error:", error);
+  }
 
-          headers: {
-            Accept:
-              "application/json",
+  /*
+   * SessionStorage'a kaydet.
+   */
+  try {
+    window.sessionStorage.setItem(SESSION_KEY, token);
+  } catch (error) {
+    console.log("Session storage error:", error);
+  }
 
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
+  return token;
+}
 
 
-    if (!response.ok) {
+/* =========================================================
+   GET STORED SESSION
+========================================================= */
 
-      sessionStorage.removeItem(
-        SESSION_KEY
-      );
+function getStoredSession() {
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY);
+  } catch (error) {
+    return null;
+  }
+}
+
+
+/* =========================================================
+   CLEAR SESSION
+========================================================= */
+
+function clearSession() {
+  try {
+    window.sessionStorage.removeItem(SESSION_KEY);
+  } catch (error) {
+    console.log("Session clear error:", error);
+  }
+}
+
+
+/* =========================================================
+   CHECK DISCORD SESSION
+========================================================= */
+
+function checkDiscordSession(tokenFromHash) {
+  var token = tokenFromHash || getStoredSession();
+
+  if (!token) {
+    setLoggedOutState();
+    return;
+  }
+
+  fetch(API_URL + "/api/me", {
+    method: "GET",
+
+    headers: {
+      Accept: "application/json",
+      Authorization: "Bearer " + token
+    },
+
+    cache: "no-store"
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error("Session invalid");
+      }
+
+      return response.json();
+    })
+
+    .then(function (data) {
+      if (!data || !data.success || !data.user) {
+        throw new Error("User data missing");
+      }
+
+      currentUser = data.user;
+
+      setLoggedInState(data.user);
+    })
+
+    .catch(function (error) {
+      console.log("Discord session error:", error);
+
+      clearSession();
+      currentUser = null;
 
       setLoggedOutState();
+    });
+}
 
-      return;
-    }
 
+/* =========================================================
+   AVATAR URL
+========================================================= */
 
-    const data =
-      await response.json();
+function getDiscordAvatarURL(user) {
+  if (!user) {
+    return "";
+  }
 
+  if (user.avatar_url) {
+    return user.avatar_url;
+  }
+
+  if (user.avatarUrl) {
+    return user.avatarUrl;
+  }
+
+  if (user.avatar && user.id) {
+    var extension = "png";
 
     if (
-      !data.authenticated ||
-      !data.user
+      typeof user.avatar === "string" &&
+      user.avatar.indexOf("a_") === 0
     ) {
-
-      sessionStorage.removeItem(
-        SESSION_KEY
-      );
-
-      setLoggedOutState();
-
-      return;
+      extension = "gif";
     }
 
-
-    setLoggedInState(
-      data.user
+    return (
+      "https://cdn.discordapp.com/avatars/" +
+      encodeURIComponent(user.id) +
+      "/" +
+      encodeURIComponent(user.avatar) +
+      "." +
+      extension +
+      "?size=256"
     );
-
-
-  } catch (error) {
-
-    console.error(
-      "Imperius API error:",
-      error
-    );
-
-    setLoggedOutState();
-
   }
 
+  return "";
 }
 
 
-// ======================================================
-// LOGGED IN
-// ======================================================
+/* =========================================================
+   USER DISPLAY NAME
+========================================================= */
 
-function setLoggedInState(user) {
-
-  const loginButton =
-    document.getElementById(
-      "loginButton"
-    );
-
-  const dashboardLogin =
-    document.getElementById(
-      "dashboardLogin"
-    );
-
-
-  if (loginButton) {
-
-    const replacement =
-      loginButton.cloneNode(true);
-
-    replacement.textContent =
-      user.username ||
-      "Hesabım";
-
-    loginButton.replaceWith(
-      replacement
-    );
-
-
-    replacement.addEventListener(
-      "click",
-      () => {
-
-        document
-          .getElementById("dashboard")
-          ?.scrollIntoView({
-            behavior: "smooth"
-          });
-
-      }
-    );
-
+function getDisplayName(user) {
+  if (!user) {
+    return "Imperius Yurttaşı";
   }
 
-
-  if (dashboardLogin) {
-
-    const replacement =
-      dashboardLogin.cloneNode(true);
-
-    replacement.textContent =
-      "Çıkış Yap";
-
-    dashboardLogin.replaceWith(
-      replacement
-    );
-
-
-    replacement.addEventListener(
-      "click",
-      logout
-    );
-
-  }
-
-
-  renderDiscordProfile(
-    user
+  return (
+    user.display_name ||
+    user.displayName ||
+    user.global_name ||
+    user.globalName ||
+    user.username ||
+    "Imperius Yurttaşı"
   );
-
 }
 
 
-// ======================================================
-// PROFILE
-// ======================================================
+/* =========================================================
+   USERNAME
+========================================================= */
+
+function getUsername(user) {
+  if (!user) {
+    return "";
+  }
+
+  return user.username || "";
+}
+
+
+/* =========================================================
+   RENDER DISCORD PROFILE
+========================================================= */
 
 function renderDiscordProfile(user) {
+  /*
+   * Eski JS sürümünün aşağıya eklediği fazladan
+   * discordProfile kutusu varsa tamamen kaldır.
+   */
+  var oldProfile = getElement("discordProfile");
 
-  const dashboard =
-    document.getElementById(
-      "dashboard"
-    );
+  if (oldProfile && oldProfile.parentNode) {
+    oldProfile.parentNode.removeChild(oldProfile);
+  }
 
+  var dashboard = getElement("dashboard");
 
   if (!dashboard) {
     return;
   }
 
+  var profileDemo = dashboard.querySelector(".profile-demo");
 
-  let profile =
-    document.getElementById(
-      "discordProfile"
-    );
-
-
-  if (!profile) {
-
-    profile =
-      document.createElement(
-        "div"
-      );
-
-    profile.id =
-      "discordProfile";
-
-
-    profile.style.cssText = `
-      display:flex;
-      align-items:center;
-      gap:16px;
-
-      width:100%;
-      max-width:760px;
-
-      margin:0 auto 30px;
-      padding:20px;
-
-      box-sizing:border-box;
-
-      border:
-        1px solid
-        rgba(212,175,55,.35);
-
-      background:
-        rgba(10,7,8,.92);
-
-      box-shadow:
-        0 20px 60px
-        rgba(0,0,0,.25);
-    `;
-
-
-    const container =
-      dashboard.querySelector(
-        ".container"
-      ) || dashboard;
-
-
-    const grid =
-      container.querySelector(
-        ".dashboard-grid"
-      );
-
-
-    if (grid) {
-
-      grid.parentNode.insertBefore(
-        profile,
-        grid
-      );
-
-    } else {
-
-      container.appendChild(
-        profile
-      );
-
-    }
-
-  }
-
-
-  profile.innerHTML = "";
-
-
-  // AVATAR
-
-  const avatar =
-    document.createElement(
-      "img"
-    );
-
-
-  avatar.src =
-    user.avatar ||
-    "https://cdn.discordapp.com/embed/avatars/0.png";
-
-
-  avatar.alt =
-    "Discord Avatarı";
-
-
-  avatar.style.cssText = `
-    width:68px;
-    height:68px;
-
-    border-radius:50%;
-
-    object-fit:cover;
-
-    border:
-      2px solid
-      #c2a24d;
-
-    flex-shrink:0;
-  `;
-
-
-  // INFO
-
-  const info =
-    document.createElement(
-      "div"
-    );
-
-
-  const name =
-    document.createElement(
-      "strong"
-    );
-
-
-  name.textContent =
-    user.username ||
-    "Imperius Üyesi";
-
-
-  name.style.cssText = `
-    display:block;
-
-    margin-bottom:6px;
-
-    color:#d4b75e;
-
-    font-size:20px;
-  `;
-
-
-  const username =
-    document.createElement(
-      "div"
-    );
-
-
-  username.textContent =
-    user.discordUsername
-      ? `@${user.discordUsername}`
-      : "Discord hesabı bağlı";
-
-
-  username.style.cssText = `
-    color:#aaa;
-    font-size:14px;
-  `;
-
-
-  const status =
-    document.createElement(
-      "div"
-    );
-
-
-  status.textContent =
-    "Discord ile doğrulandı";
-
-
-  status.style.cssText = `
-    margin-top:6px;
-
-    color:#8fa98c;
-
-    font-size:12px;
-
-    text-transform:uppercase;
-
-    letter-spacing:1px;
-  `;
-
-
-  info.appendChild(
-    name
-  );
-
-  info.appendChild(
-    username
-  );
-
-  info.appendChild(
-    status
-  );
-
-
-  profile.appendChild(
-    avatar
-  );
-
-  profile.appendChild(
-    info
-  );
-
-}
-
-
-// ======================================================
-// LOGGED OUT
-// ======================================================
-
-function setLoggedOutState() {
-
-  document
-    .getElementById(
-      "discordProfile"
-    )
-    ?.remove();
-
-
-  setupLoginButton(
-    "loginButton",
-    "Discord ile Giriş"
-  );
-
-
-  setupLoginButton(
-    "dashboardLogin",
-    "Discord ile Giriş Yap"
-  );
-
-}
-
-
-// ======================================================
-// LOGIN BUTTON
-// ======================================================
-
-function setupLoginButton(
-  id,
-  text
-) {
-
-  const button =
-    document.getElementById(
-      id
-    );
-
-
-  if (!button) {
+  if (!profileDemo) {
     return;
   }
 
+  var avatarPlaceholder =
+    profileDemo.querySelector(".avatar-placeholder");
 
-  const replacement =
-    button.cloneNode(true);
+  var infoContainer =
+    profileDemo.querySelector(".profile-info");
 
+  if (!infoContainer) {
+    var children = profileDemo.children;
 
-  replacement.textContent =
-    text;
+    if (children.length > 1) {
+      infoContainer = children[1];
+    }
+  }
 
+  var displayName = getDisplayName(user);
+  var username = getUsername(user);
+  var avatarURL = getDiscordAvatarURL(user);
 
-  button.replaceWith(
-    replacement
-  );
+  /*
+   * Avatar
+   */
+  if (avatarPlaceholder) {
+    if (avatarURL) {
+      avatarPlaceholder.innerHTML =
+        '<img src="' +
+        escapeHTML(avatarURL) +
+        '" alt="' +
+        escapeHTML(displayName) +
+        '" style="' +
+        "width:100%;" +
+        "height:100%;" +
+        "object-fit:cover;" +
+        "border-radius:50%;" +
+        '">';
+    } else {
+      avatarPlaceholder.textContent =
+        displayName.charAt(0).toUpperCase();
+    }
+  }
 
+  /*
+   * Kullanıcı bilgileri
+   */
+  if (infoContainer) {
+    var small = infoContainer.querySelector("small");
+    var title = infoContainer.querySelector("h3");
+    var paragraph = infoContainer.querySelector("p");
 
-  replacement.addEventListener(
-    "click",
-    loginWithDiscord
-  );
+    if (small) {
+      small.textContent = "IMPERIUS YURTTAŞI";
+    }
 
+    if (title) {
+      title.textContent = displayName;
+    }
+
+    if (paragraph) {
+      if (username) {
+        paragraph.innerHTML =
+          "@" +
+          escapeHTML(username) +
+          '<br><span class="verified-text">' +
+          "DISCORD İLE DOĞRULANDI" +
+          "</span>";
+      } else {
+        paragraph.innerHTML =
+          '<span class="verified-text">' +
+          "DISCORD İLE DOĞRULANDI" +
+          "</span>";
+      }
+    }
+  }
 }
 
 
-// ======================================================
-// LOGOUT
-// ======================================================
+/* =========================================================
+   RESET PROFILE
+========================================================= */
+
+function resetDiscordProfile() {
+  var oldProfile = getElement("discordProfile");
+
+  if (oldProfile && oldProfile.parentNode) {
+    oldProfile.parentNode.removeChild(oldProfile);
+  }
+
+  var dashboard = getElement("dashboard");
+
+  if (!dashboard) {
+    return;
+  }
+
+  var profileDemo = dashboard.querySelector(".profile-demo");
+
+  if (!profileDemo) {
+    return;
+  }
+
+  var avatarPlaceholder =
+    profileDemo.querySelector(".avatar-placeholder");
+
+  var infoContainer =
+    profileDemo.querySelector(".profile-info");
+
+  if (!infoContainer) {
+    var children = profileDemo.children;
+
+    if (children.length > 1) {
+      infoContainer = children[1];
+    }
+  }
+
+  if (avatarPlaceholder) {
+    avatarPlaceholder.innerHTML = "";
+    avatarPlaceholder.textContent = "I";
+  }
+
+  if (infoContainer) {
+    var small = infoContainer.querySelector("small");
+    var title = infoContainer.querySelector("h3");
+    var paragraph = infoContainer.querySelector("p");
+
+    if (small) {
+      small.textContent = "IMPERIUS YURTTAŞI";
+    }
+
+    if (title) {
+      title.textContent = "DISCORD İLE GİRİŞ YAP";
+    }
+
+    if (paragraph) {
+      paragraph.textContent =
+        "Profil bilgilerin giriş yaptıktan sonra burada görüntülenecek.";
+    }
+  }
+}
+
+
+/* =========================================================
+   LOGGED IN STATE
+========================================================= */
+
+function setLoggedInState(user) {
+  renderDiscordProfile(user);
+
+  var loginButton = getElement("loginButton");
+  var dashboardLogin = getElement("dashboardLogin");
+
+  var displayName = getDisplayName(user);
+
+  /*
+   * Navbar butonu
+   */
+  if (loginButton) {
+    loginButton.textContent = displayName;
+
+    loginButton.onclick = function () {
+      var dashboard = getElement("dashboard");
+
+      if (dashboard) {
+        dashboard.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    };
+  }
+
+  /*
+   * Dashboard çıkış butonu
+   */
+  if (dashboardLogin) {
+    dashboardLogin.textContent = "Çıkış Yap";
+
+    dashboardLogin.onclick = function () {
+      logout();
+    };
+  }
+}
+
+
+/* =========================================================
+   LOGGED OUT STATE
+========================================================= */
+
+function setLoggedOutState() {
+  resetDiscordProfile();
+
+  var loginButton = getElement("loginButton");
+  var dashboardLogin = getElement("dashboardLogin");
+
+  if (loginButton) {
+    loginButton.textContent = "Discord ile Giriş";
+
+    loginButton.onclick = function () {
+      loginWithDiscord();
+    };
+  }
+
+  if (dashboardLogin) {
+    dashboardLogin.textContent =
+      "Discord ile Giriş Yap";
+
+    dashboardLogin.onclick = function () {
+      loginWithDiscord();
+    };
+  }
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 function logout() {
+  clearSession();
 
-  sessionStorage.removeItem(
-    SESSION_KEY
-  );
+  currentUser = null;
 
+  try {
+    window.history.replaceState(
+      null,
+      document.title,
+      window.location.pathname + window.location.search
+    );
+  } catch (error) {
+    console.log("Logout URL cleanup error:", error);
+  }
 
   setLoggedOutState();
-
-
-  window.location.hash = "";
-
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
 }
 
 
-// ======================================================
-// START
-// ======================================================
+/* =========================================================
+   LOGIN BUTTONS
+========================================================= */
 
-async function startImperius() {
+function setupLoginButtons() {
+  var loginButton = getElement("loginButton");
+  var dashboardLogin = getElement("dashboardLogin");
 
-  /*
-   * Önce OAuth dönüşünde token varsa
-   * sessionStorage'a al.
-   */
+  if (loginButton) {
+    loginButton.onclick = function () {
+      loginWithDiscord();
+    };
+  }
 
-  receiveOAuthSession();
-
-
-  /*
-   * Sonra kullanıcıyı doğrula.
-   */
-
-  await checkDiscordSession();
-
+  if (dashboardLogin) {
+    dashboardLogin.onclick = function () {
+      loginWithDiscord();
+    };
+  }
 }
 
 
-if (
-  document.readyState ===
-  "loading"
-) {
+/* =========================================================
+   START
+========================================================= */
 
+function startImperiusWebsite() {
+  setupNavbar();
+  setupMobileMenu();
+  setupRevealAnimations();
+  setupCommandSearch();
+  setupLoginButtons();
+
+  /*
+   * Discord OAuth dönüşü varsa token burada alınır.
+   */
+  var oauthToken = receiveOAuthSession();
+
+  /*
+   * Discord session kontrol edilir.
+   */
+  checkDiscordSession(oauthToken);
+}
+
+
+/* =========================================================
+   DOM READY
+========================================================= */
+
+if (document.readyState === "loading") {
   document.addEventListener(
     "DOMContentLoaded",
-    startImperius
+    startImperiusWebsite
   );
-
 } else {
-
-  startImperius();
-
+  startImperiusWebsite();
 }
