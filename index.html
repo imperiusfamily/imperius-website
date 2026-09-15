@@ -1,12 +1,443 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imperius</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#160609">
+  <meta name="description" content="Imperius Discord topluluğunun resmi web sitesi.">
+  <title>Imperius — Veni, Vidi, Vici</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./assets/css/style.css">
 </head>
+
 <body>
-    <h1>IMPERIUS</h1>
-    <p>Imperius web sitesi hazırlanıyor.</p>
+  <div class="noise"></div>
+
+  <header class="navbar" id="navbar">
+    <a class="brand" href="#home">
+      <img src="./assets/images/logo.png" alt="Imperius">
+      <div>
+        <strong>IMPERIUS</strong>
+        <span>SPQR</span>
+      </div>
+    </a>
+
+    <nav id="navMenu">
+      <a href="#home">Ana Sayfa</a>
+      <a href="#about">Imperius</a>
+      <a href="#systems">Sistemler</a>
+      <a href="#economy">Ekonomi</a>
+      <a href="#achievements">Başarımlar</a>
+      <a href="#colosseum">Koloseum</a>
+      <a href="#commands">Komutlar</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn-ghost"
+         href="https://discord.gg/imperiusfamily"
+         target="_blank"
+         rel="noopener noreferrer">
+        Discord'a Katıl
+      </a>
+
+      <button class="btn btn-gold" id="loginButton">
+        Discord ile Giriş
+      </button>
+    </div>
+
+    <button class="mobile-menu" id="mobileMenu" aria-label="Menüyü aç">
+      ☰
+    </button>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-bg"></div>
+      <div class="hero-shade"></div>
+
+      <div class="hero-content reveal">
+        <div class="eyebrow">ROMA'NIN RUHU • MODERN TOPLULUK</div>
+
+        <img class="hero-logo"
+             src="./assets/images/logo.png"
+             alt="Imperius logosu">
+
+        <h1>IMPERIUS</h1>
+        <p class="latin">VENI • VIDI • VICI</p>
+
+        <p class="hero-description">
+          Bir Discord sunucusundan daha fazlası.
+          Kendi ekonomisi, seviyeleri, başarımları, etkinlikleri
+          ve topluluğuyla yaşayan bir Imperius.
+        </p>
+
+        <div class="hero-buttons">
+          <a class="btn btn-gold btn-large"
+             href="https://discord.gg/imperiusfamily"
+             target="_blank"
+             rel="noopener noreferrer">
+            Imperius'a Katıl
+          </a>
+
+          <a class="btn btn-glass btn-large" href="#systems">
+            Sistemleri Keşfet
+          </a>
+        </div>
+      </div>
+
+      <a class="scroll-down" href="#about">⌄</a>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="section-heading reveal">
+        <span>IMPERIUM ROMANUM</span>
+        <h2>Imperius'a Hoş Geldin</h2>
+        <p>
+          Aktivitenin ilerlemeye, ilerlemenin statüye dönüştüğü
+          kapsamlı bir Discord topluluğu.
+        </p>
+      </div>
+
+      <div class="stat-grid">
+        <article class="stat-card reveal">
+          <span class="stat-icon">♛</span>
+          <strong>50</strong>
+          <p>Maksimum Seviye</p>
+        </article>
+
+        <article class="stat-card reveal">
+          <span class="stat-icon">◈</span>
+          <strong>Denarius</strong>
+          <p>Imperius Ekonomisi</p>
+        </article>
+
+        <article class="stat-card reveal">
+          <span class="stat-icon">⚔</span>
+          <strong>Koloseum</strong>
+          <p>Turnuva & Etkinlikler</p>
+        </article>
+
+        <article class="stat-card reveal">
+          <span class="stat-icon">✦</span>
+          <strong>Başarımlar</strong>
+          <p>Ödüller & İlerleme</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section dark-section" id="systems">
+      <div class="section-heading reveal">
+        <span>IMPERIUS SİSTEMLERİ</span>
+        <h2>Topluluğun İçinde Yaşayan Bir Dünya</h2>
+        <p>
+          Aktivite göster, seviye kazan, görevleri tamamla,
+          Denarius biriktir ve Imperius'taki konumunu yükselt.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card reveal">
+          <div class="feature-number">I</div>
+          <div class="feature-icon">♜</div>
+          <h3>Seviye & XP</h3>
+          <p>
+            Sunucudaki aktiviten ilerlemeye dönüşür.
+            Seviye atladıkça Imperius içerisindeki yolculuğun gelişir.
+          </p>
+          <div class="mini-progress">
+            <span style="width:72%"></span>
+          </div>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-number">II</div>
+          <div class="feature-icon">▣</div>
+          <h3>Günlük Görevler</h3>
+          <p>
+            Her gün yenilenen üç kişisel görevle aktiviteni
+            ödüllere dönüştür.
+          </p>
+          <span class="feature-tag">3 GÖREV / GÜN</span>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-number">III</div>
+          <div class="feature-icon">♕</div>
+          <h3>Başarımlar</h3>
+          <p>
+            Mesaj, ses, seviye, ekonomi ve günlük seri
+            kilometre taşlarını tamamla.
+          </p>
+          <span class="feature-tag">ÖZEL ÖDÜLLER</span>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-number">IV</div>
+          <div class="feature-icon">⚔</div>
+          <h3>Turnuvalar</h3>
+          <p>
+            Koloseum'daki etkinliklere ve topluluk
+            mücadelelerine katıl.
+          </p>
+          <span class="feature-tag">KOLOSEUM</span>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-number">V</div>
+          <div class="feature-icon">♢</div>
+          <h3>Dinamik Roller</h3>
+          <p>
+            Aktivite ve seviyene göre topluluk içerisindeki
+            statünü geliştir.
+          </p>
+          <span class="feature-tag">İLERLEME</span>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="feature-number">VI</div>
+          <div class="feature-icon">☷</div>
+          <h3>Kişisel Profil</h3>
+          <p>
+            XP, seviye, mesaj, ses aktivitesi, ekonomi ve
+            başarımlarını tek noktadan takip et.
+          </p>
+          <span class="feature-tag">WEB PANELİ</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section economy" id="economy">
+      <div class="economy-layout">
+        <div class="economy-copy reveal">
+          <span class="section-kicker">IMPERIUS HAZİNESİ</span>
+          <h2>Denarius Ekonomisi</h2>
+
+          <p>
+            Imperius'un kendi ekonomisinde aktifliğini
+            ödüllere dönüştür. Günlük görevler, başarımlar
+            ve topluluk sistemleriyle hazineni büyüt.
+          </p>
+
+          <div class="economy-features">
+            <div><b>◈</b><span><strong>Günlük Ödüller</strong><small>Serini koru ve ödüllerini geliştir.</small></span></div>
+            <div><b>♛</b><span><strong>Başarım Ödülleri</strong><small>Kilometre taşlarını Denarius'a dönüştür.</small></span></div>
+            <div><b>▣</b><span><strong>Görev Ödülleri</strong><small>Günlük görevlerini tamamla.</small></span></div>
+          </div>
+        </div>
+
+        <div class="treasury-card reveal">
+          <span>IMPERIUS HAZİNE DAİRESİ</span>
+          <h3>◈ DENARIUS</h3>
+          <div class="coin">D</div>
+          <p>Imperius'un resmi topluluk para birimi.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="achievements">
+      <div class="section-heading reveal">
+        <span>IMPERIUS ACHIEVEMENT REGISTRY</span>
+        <h2>Başarımlar</h2>
+        <p>Imperius tarihine adını yazdır.</p>
+      </div>
+
+      <div class="achievement-grid">
+        <article class="achievement reveal">
+          <div>✒</div>
+          <h3>İlk Nutuk</h3>
+          <p>100 mesaja ulaş.</p>
+          <strong>+1.000 D</strong>
+        </article>
+
+        <article class="achievement reveal">
+          <div>♜</div>
+          <h3>Meclis Hatibi</h3>
+          <p>1.000 mesaja ulaş.</p>
+          <strong>+5.000 D</strong>
+        </article>
+
+        <article class="achievement reveal">
+          <div>◉</div>
+          <h3>Agora Müdavimi</h3>
+          <p>10 saat ses aktivitesine ulaş.</p>
+          <strong>+5.000 D</strong>
+        </article>
+
+        <article class="achievement reveal">
+          <div>⚔</div>
+          <h3>Lejyonun Sesi</h3>
+          <p>50 saat ses aktivitesine ulaş.</p>
+          <strong>+15.000 D</strong>
+        </article>
+
+        <article class="achievement reveal">
+          <div>♛</div>
+          <h3>Varlıklı Patrici</h3>
+          <p>100.000 Denarius'a ulaş.</p>
+          <strong>+10.000 D</strong>
+        </article>
+
+        <article class="achievement locked reveal">
+          <div>♕</div>
+          <h3>Roma Hazinesi</h3>
+          <p>1.000.000 Denarius'a ulaş.</p>
+          <strong>+50.000 D</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section colosseum" id="colosseum">
+      <div class="colosseum-content reveal">
+        <span>⚔ IMPERIUS KOLOSEUM ⚔</span>
+        <h2>Şanını Kanıtla</h2>
+        <p>
+          Turnuvalar, düellolar, lobiler ve topluluk
+          etkinlikleri Imperius Koloseum'da seni bekliyor.
+        </p>
+
+        <a class="btn btn-gold btn-large"
+           href="https://discord.gg/imperiusfamily"
+           target="_blank"
+           rel="noopener noreferrer">
+          Koloseum'a Katıl
+        </a>
+      </div>
+    </section>
+
+    <section class="section commands" id="commands">
+      <div class="section-heading reveal">
+        <span>IMPERIUS BOT</span>
+        <h2>Komut Rehberi</h2>
+        <p>Imperius sistemlerini yöneten komutlardan bazıları.</p>
+      </div>
+
+      <div class="command-search reveal">
+        <input id="commandSearch"
+               type="search"
+               placeholder="Komut ara... örn. görevler">
+      </div>
+
+      <div class="command-grid" id="commandGrid">
+        <div class="command-card" data-command="gorevler günlük görev">
+          <code>/gorevler</code>
+          <p>Günlük Imperius görevlerini ve ilerlemeni görüntüler.</p>
+        </div>
+
+        <div class="command-card" data-command="basarimlar başarımlar">
+          <code>/basarimlar</code>
+          <p>Başarımlarını ve ilerlemeni görüntüler.</p>
+        </div>
+
+        <div class="command-card" data-command="slot casino kumarhane">
+          <code>/slot</code>
+          <p>Imperius Casino'da slot oynarsın.</p>
+        </div>
+
+        <div class="command-card" data-command="zar casino">
+          <code>/zar</code>
+          <p>Krupiyeye karşı zar düellosuna katılırsın.</p>
+        </div>
+
+        <div class="command-card" data-command="yazitura yazı tura casino">
+          <code>/yazitura</code>
+          <p>Denarius ile yazı tura oynarsın.</p>
+        </div>
+
+        <div class="command-card" data-command="turnuva tournament">
+          <code>/turnuva</code>
+          <p>Imperius turnuva sistemine erişirsin.</p>
+        </div>
+
+        <div class="command-card" data-command="etkinlik event">
+          <code>/etkinlik</code>
+          <p>Imperius etkinlik sistemini kullanır.</p>
+        </div>
+
+        <div class="command-card" data-command="yardim yardım help">
+          <code>/yardim</code>
+          <p>Botun kapsamlı komut rehberini görüntüler.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dashboard-preview" id="dashboard">
+      <div class="section-heading reveal">
+        <span>IMPERIUS CİVİTAS</span>
+        <h2>Kişisel Panel</h2>
+        <p>
+          Discord hesabınla giriş yaparak Imperius
+          ilerlemeni tek ekrandan takip edebileceksin.
+        </p>
+      </div>
+
+      <div class="dashboard-card reveal">
+        <div class="profile-demo">
+          <div class="avatar-placeholder">I</div>
+
+          <div>
+            <small>IMPERIUS YURTTAŞI</small>
+            <h3>Discord ile giriş yap</h3>
+            <p>Profil bilgilerin giriş yaptıktan sonra burada görüntülenecek.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-stats">
+          <div><span>SEVİYE</span><strong>—</strong></div>
+          <div><span>DENARIUS</span><strong>—</strong></div>
+          <div><span>MESAJ</span><strong>—</strong></div>
+          <div><span>SES</span><strong>—</strong></div>
+          <div><span>GÜNLÜK SERİ</span><strong>—</strong></div>
+          <div><span>BAŞARIM</span><strong>—</strong></div>
+        </div>
+
+        <button class="btn btn-gold btn-large" id="dashboardLogin">
+          Discord ile Giriş Yap
+        </button>
+
+        <p class="security-note">
+          🔒 Web paneli bot yönetim yetkilerine erişmez.
+        </p>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="reveal">
+        <img src="./assets/images/logo.png" alt="Imperius">
+        <h2>Senato Seni Bekliyor.</h2>
+        <p>Imperius'un bir parçası ol.</p>
+
+        <a class="btn btn-gold btn-large"
+           href="https://discord.gg/imperiusfamily"
+           target="_blank"
+           rel="noopener noreferrer">
+          Discord'a Katıl
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">
+      <img src="./assets/images/logo.png" alt="Imperius">
+      <div>
+        <strong>IMPERIUS</strong>
+        <span>VENI • VIDI • VICI</span>
+      </div>
+    </div>
+
+    <p>Imperius Discord Community</p>
+
+    <a href="https://discord.gg/imperiusfamily"
+       target="_blank"
+       rel="noopener noreferrer">
+      Discord
+    </a>
+  </footer>
+
+  <script src="./assets/js/main.js"></script>
 </body>
 </html>
